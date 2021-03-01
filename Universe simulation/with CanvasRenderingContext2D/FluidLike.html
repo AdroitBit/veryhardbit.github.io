@@ -1,42 +1,62 @@
 <head>
 	<link rel="stylesheet" href="style.css">
-	<script src="function.js"></script>
+	<script src="ScriptIncluder.js"></script>
 </head>
 
 <body>
+	<canvas></canvas>
 	<script>
-var Forces=[
-	new Force("gravity",function(o){
-		return new V3(0,o.m*g,0);
-	}),
-	new Force("inFrame",function(o,k,F,r){
-		F=new V3(0,0,0);k=900*o.m;
-		if(o.pos.y+o.r>can.height/2)F=F.add(new V3(0,-k*((o.pos.y+o.r)-(can.height/2)),0));
-		if(o.pos.y-o.r<-can.height/2)F=F.add(new V3(0,-k*((o.pos.y-o.r)-(-can.height/2)),0));
-		if(o.pos.x+o.r>can.width/2)F=F.add(new V3(-k*((o.pos.x+o.r)-(can.width/2)),0,0));
-		if(o.pos.x-o.r<-can.width/2)F=F.add(new V3(-k*((o.pos.x-o.r)-(-can.width/2)),0,0));
-		return F;
-	}),
-	new Force("pushEachother",function(o1,F,r){
-		F=new V3(0,0,0);
-		o.forEach(function(i){
-			if(o1==i)return false;
-			r=o1.pos.sub(i.pos);
-			if(r.length>o1.r+i.r)return false;
-			F=F.add(r.normalized().scale(-900*o1.m*i.m*pow(r.length-(o1.r+i.r),1)))
-		});
-		return F;
-	}),
-	new Force("drag",function(o,r){
-		return o.v.scale(-1.25,o.m);
-	}),
-	new Force("pull",function(o,r){
-		if(!can.mouseHolding)return new V3();
-		r=can.mouse.sub(o.pos);
-		return r.normalized().scale(20*o.m*(r.length-20)).add(o.v.scale(-5.5,o.m));
-	})
-];
-function calculate(){
+function setup(){
+	for(let i=0;i<100;++i){
+		co=new PObj(1,2,"#"+round(random()*0xFFFFFF).toString(16));
+		co.r=10;
+		co.rshow=co.r+2;
+		co.pos.x=randomRange(-200,200);
+		co.pos.y=randomRange(-200,200);
+		co.v.x=randomRange(-200,200);
+		co.v.y=randomRange(-200,200);
+
+		co.friction=0.2;
+		co.bounciness=0.9;
+		co.pos.x=0;
+		co.pos.y=randomRange(-200,200);
+		o.push(co);
+	}
+	window.Forces=[
+		new Force("gravity",function(o){
+			return new V3(0,o.m*g,0);
+		}),
+		new Force("inFrame",function(o,k,F,r){
+			F=new V3(0,0,0);k=900;
+			if(o.pos.y+o.r>can.height/2)F=F.add(new V3(0,-k*((o.pos.y+o.r)-(can.height/2)),0));
+			if(o.pos.y-o.r<-can.height/2)F=F.add(new V3(0,-k*((o.pos.y-o.r)-(-can.height/2)),0));
+			if(o.pos.x+o.r>can.width/2)F=F.add(new V3(-k*((o.pos.x+o.r)-(can.width/2)),0,0));
+			if(o.pos.x-o.r<-can.width/2)F=F.add(new V3(-k*((o.pos.x-o.r)-(-can.width/2)),0,0));
+			return F;
+		},ForceMode.Accerelation),
+		new Force("pushEachother",function(o1,F,r){
+			F=new V3(0,0,0);
+			o.forEach(function(i){
+				if(o1==i)return false;
+				r=o1.pos.sub(i.pos);
+				if(r.length>o1.r+i.r)return false;
+				F=F.add(r.normalized().scale(-1200*o1.m*i.m*pow(r.length-(o1.r+i.r),1)))
+			});
+			return F;
+		}),
+		new Force("drag",function(o,r){
+			return o.v.scale(-1.05,o.m);
+		}),
+		new Force("pull",function(o,r){
+			if(!can.mouseHolding)return new V3();
+			r=can.mouse.sub(o.pos);
+			return r.normalized().scale(100*o.m*(r.length-20)).add(o.v.scale(-5.5,o.m));
+		})
+	];
+}
+
+function calculate(vmax){
+	vmax=0;
 	for(dtti=0,dtt=dt/precisionLevel;dtti<dt;dtti+=dtt){
 		for(let i of o){
 			i.a.x=i.a.y=i.a.z=0;
@@ -44,6 +64,7 @@ function calculate(){
 				i.a=i.a.add(i2.f(i).scale(1/i.m));
 			}
 			i.v=i.v.add(i.a.scale(dtt));
+			vmax=max(i.v.len(),vmax);
 			i.pos=i.pos.add(i.v.scale(dtt));
 			//i.conserveMomentumWall();
 		}
@@ -52,6 +73,12 @@ function calculate(){
 				o[i].conserveMomentum(o[i2]);
 			}
 		}*/
+	}
+	for(let i of o){
+		i.color=HSVtoRGB(
+			(1-i.v.len()/500)*240/360,
+			1,1
+		).toText();
 	}
 	
 }
@@ -63,6 +90,9 @@ function exe(){
 	}
 	requestAnimationFrame(exe);
 }
-exe();
+window.onload=function(){
+	setup();
+	exe();
+}
 	</script>
 </body>
