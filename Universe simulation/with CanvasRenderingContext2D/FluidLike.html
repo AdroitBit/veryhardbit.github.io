@@ -75,8 +75,11 @@ function calculate(vmax){
 		}*/
 	}
 	for(let i of o){
+		n=(1-i.v.len()/500);
+		if(n<0)n=0;
+		if(n>1)n=1;
 		i.color=HSVtoRGB(
-			(1-i.v.len()/500)*240/360,
+			n*240/360,
 			1,1
 		).toText();
 	}
