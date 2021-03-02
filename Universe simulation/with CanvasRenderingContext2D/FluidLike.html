@@ -76,22 +76,23 @@ function calculate(vmax){
 		}*/
 	}
 	for(let i of o){
-		P=1/2*i.v.dotSelf+i.genForce.len()*i.r*2*PI;
-		n=(1-P/180000);
-		if(n<0)n=0;
-		if(n>1)n=1;
-		i.color=HSVtoRGB(
-			n*240/360,
-			1,1
-		).toText();
+		if(i.genForce){
+			P=1/2*i.v.dotSelf+i.genForce.len()*i.r*2*PI;
+			n=(1-P/180000);
+			if(n<0)n=0;
+			if(n>1)n=1;
+			i.color=HSVtoRGB(
+				n*240/360,
+				1,1
+			).toText();
+		}
 	}
 	
 }
-var time0=new Date().getTime();
-var time1=new Date().getTime();
+var time0,time1;
 function exe(){
 	time0=time1;
-	time1=new Date().getTime();
+	time1=new Date().getTime()/1000;
 	dt=time1-time0;
 	if(!pause){
 		draw();
@@ -102,7 +103,9 @@ function exe(){
 }
 window.onload=function(){
 	setup();
+	time1=new Date().getTime()/1000;
 	exe();
+	
 }
 	</script>
 </body>
