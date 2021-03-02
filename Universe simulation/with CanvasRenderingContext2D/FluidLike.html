@@ -42,6 +42,7 @@ function setup(){
 				if(r.length>o1.r+i.r)return false;
 				F=F.add(r.normalized().scale(-1200*o1.m*i.m*pow(r.length-(o1.r+i.r),1)))
 			});
+			o1.genForce=F;
 			return F;
 		}),
 		new Force("drag",function(o,r){
@@ -75,7 +76,8 @@ function calculate(vmax){
 		}*/
 	}
 	for(let i of o){
-		n=(1-i.v.len()/500);
+		P=1/2*i.v.dotSelf+i.genForce.len()*i.r*2*PI;
+		n=(1-P/200000);
 		if(n<0)n=0;
 		if(n>1)n=1;
 		i.color=HSVtoRGB(

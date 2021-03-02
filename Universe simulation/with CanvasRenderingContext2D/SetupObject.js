@@ -113,3 +113,6 @@ function HSVtoRGB(h, s, v) {
 Object.prototype.toText=function(){
 	return "rgb("+this.r+","+this.g+","+this.b+")";
 }
+function map(v,low1,high1,low2,high2){
+	return v/(high1-low1)*(high2-low2)+low2;
+}
