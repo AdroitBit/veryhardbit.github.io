@@ -87,7 +87,12 @@ function calculate(vmax){
 	}
 	
 }
+var time0=new Date().getTime();
+var time1=new Date().getTime();
 function exe(){
+	time0=time1;
+	time1=new Date().getTime();
+	dt=time1-time0;
 	if(!pause){
 		draw();
 		calculate();
