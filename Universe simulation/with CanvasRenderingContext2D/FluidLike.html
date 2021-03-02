@@ -77,7 +77,7 @@ function calculate(vmax){
 	}
 	for(let i of o){
 		P=1/2*i.v.dotSelf+i.genForce.len()*i.r*2*PI;
-		n=(1-P/200000);
+		n=(1-P/150000);
 		if(n<0)n=0;
 		if(n>1)n=1;
 		i.color=HSVtoRGB(
