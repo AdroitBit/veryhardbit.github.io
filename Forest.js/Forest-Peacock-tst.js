@@ -300,6 +300,15 @@ Math.centerVertex2D2=function(v,x,y,i,l){
 	return [x,y];
 };
 
+
+hue2rgb(p,q,t){
+	if(t<0)t+=1;
+	if(t>1)t-=1;
+	if(6*t<1)return p+(q-p)*6*t;
+	if(2*t<1)return q;
+	if(3/2*t<1)return p+(q-p)*(2/3-t)*6;
+	return p;
+}
 class ColorRGB{
 	constructor(r,g,b){
 		[this.r,this.g,this.b]=[r,g,b];
@@ -321,8 +330,8 @@ class ColorRGB{
 			s=2*l>1?d/(2-(2*l)):d/(2*l);
 			switch(max){
 				case r:h=(g-b)/d+(g<b?6:0);	break;
-				case g:h=(b-r)/d+2;		break;
-				case b:h=(r-g)/d+4;		break;
+				case g:h=(b-r)/d+2;			break;
+				case b:h=(r-g)/d+4;			break;
 			}
 			h/=6;
 		}
@@ -338,14 +347,6 @@ class ColorHSL{
 	}
 	get hsl(){
 		return [this.h,this.s,this.l];
-	}
-	static hue2rgb(p,q,t){
-		if(t<0)t+=1;
-		if(t>1)t-=1;
-		if(6*t<1)return p+(q-p)*6*t;
-		if(2*t<1)return q;
-		if(3/2*t<1)return p+(q-p)*(2/3-t)*6;
-		return p;
 	}
 	toRGB(){
 		let r,g,b;
