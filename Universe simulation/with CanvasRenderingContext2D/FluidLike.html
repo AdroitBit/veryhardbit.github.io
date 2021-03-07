@@ -7,6 +7,7 @@
 	<canvas></canvas>
 	<script>
 var g=1000;
+var l=0.5;
 function setup(){
 	for(let i=0;i<100;++i){
 		co=new PObj(1,2,"#"+round(random()*0xFFFFFF).toString(16));
@@ -82,7 +83,7 @@ function calculate(vmax){
 			n=(1-P/180000);
 			if(n<0)n=0;
 			if(n>1)n=1;
-			i.color=new ColorHSL(n*240/360,1,0.5).toRGB().toText();
+			i.color=new ColorHSL(n*240/360,1,l).toRGB().toText();
 		}
 	}
 	
