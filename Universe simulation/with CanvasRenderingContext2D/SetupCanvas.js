@@ -20,7 +20,6 @@ can.on("mouseup",function(e){
 var dt=1/60,precisionLevel=1;
 var factorX=1,factorY=1;
 var factor=1;
-var g=1000;
 var pause=false;
 var t=0;
 function draw(){
