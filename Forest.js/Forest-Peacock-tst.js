@@ -301,7 +301,7 @@ Math.centerVertex2D2=function(v,x,y,i,l){
 };
 
 
-hue2rgb(p,q,t){
+function hue2rgb(p,q,t){
 	if(t<0)t+=1;
 	if(t>1)t-=1;
 	if(6*t<1)return p+(q-p)*6*t;
