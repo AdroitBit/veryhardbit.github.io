@@ -300,7 +300,7 @@ Math.centerVertex2D2=function(v,x,y,i,l){
 	return [x,y];
 };
 
-class Color{
+class ColorRGB{
 	constructor(r,g,b){
 		this.r=r;
 		this.g=g;
@@ -310,22 +310,17 @@ class Color{
 		return [this.r,this.g,this.b];
 	}
 	set rgb(c){
-		this.r=c[0]|0;
-		this.g=c[1]|0;
-		this.b=c[2]|0;
+		[this.r,this.g,this.b]=[c[0]|0,c[1]|0,c[2]|0];
 	}
-	get hsl(){
-		let r=this.r/255;
-		let g=this.g/255;
-		let b=this.b/255;
-		let max=Math.max(r,g,b),min=Math.min(r,g,b);
+	toHSL(){
+		let [r,g,b]=[this.r/255,this.g/255,this.b/255];
+		let [min,max]=[Math.min(r,g,b),Math.max(r,g,b)];
 		let h,s,l=(max+min)/2;
 		if(max==min){
 			h=s=0;			
 		}else{
 			let d=max-min;
-			s=l>0.5?d/(2-(max+min)):d/(max+min);
-			
+			s=2*l>1?d/(2-(2*l)):d/(2*l);
 			switch(max){
 				case r:h=(g-b)/d+(g<b?6:0);	break;
 				case g:h=(b-r)/d+2;			break;
@@ -333,6 +328,43 @@ class Color{
 			}
 			h/=6;
 		}
-		return [h,s,l];
+		return new ColorHSL(h,s,l);
+	}
+}
+class ColorHSL(){
+	constructor(h,s,l){
+		this.h=h;
+		this.s=s;
+		this.l=l;
+	}
+	set hsl(c){
+		[this.h,this.s,this.l]=c;
+	}
+	get hsl(){
+		return [this.h,this.s,this.l];
+	}
+	static hue2rgb(p,q,t){
+		if(t<0)t+=1;
+		if(t>1)t-=1;
+		if(6*t<1)return p+(q-p)*6*t;
+		if(2*t<1)return q;
+		if(3/2*t<1)return p+(q-p)*(2/3-t)*6;
+		return p;
+	}
+	toRGB(){
+		let r,g,b;
+		let [h,s,l]=[this.h,this.s,this.l];
+		if(s==0){
+			r=g=b=l;
+		}else{
+			let q=l<0.5?l*(1+s):l+s-l*s;
+			let p=2*l-q;
+			[r,g,b]=[
+				hue2rgb(p,q,h+1/3),
+				hue2rgb(p,q,h),
+				hue2rgb(p,q,h-1/3)
+			]
+		}
+		return new ColorRGB(r*255|0,g*255|0,b*255|0);
 	}
 }
