@@ -337,6 +337,23 @@ class ColorRGB{
 		}
 		return new ColorHSL(h,s,l);
 	}
+	toHSV(r,g,b,min,max,h,s,v,d){
+		[r,g,b]=[this.r/255,this.g/255,this.b/255];
+		[min,max]=[Math.min(r,g,b),Math.max(r,g,b)];
+		h,s,v=max;
+		d=max-min;
+		if(max==min){
+			h=0;
+		}else{
+			switch(max){
+				case r:h=(g-b)/d+(g<b?6:0);break;
+				case g:h=(b-r)/d+2;break;
+				case b:h=(r-g).d+4;break;
+			}
+			h/=6;
+		}
+		return new ColorHSV(h,s,v);
+	}
 }
 class ColorHSL{
 	constructor(h,s,l){
@@ -362,5 +379,33 @@ class ColorHSL{
 			]
 		}
 		return new ColorRGB(r*255|0,g*255|0,b*255|0);
+	}
+}
+//equivalent to hsb
+class ColorHSV{
+	constructor(h,s,v){
+		[this.h,this.s,this.v]=[h,s,v];
+	}
+	set hsv(c){
+		[this.h,this.s,this.l]=c;
+	}
+	get hsv(){
+		return [this.h,this.s,this.v];
+	}
+	toRGB(r,g,b,h,s,v,i,f,p,q,t){
+		i=h*6|0;
+		f=h*6-i;
+		p=v*(1-s);
+		q=v*(1-f*s);
+		t=v*(1-(1-f)*s);
+		switch(i%6){
+			case 0:r=v,g=t,b=p;break;
+			case 1:r=q,g=v,b=p;break;
+			case 2:r=p,g=v,b=t;break;
+			case 3:r=p,g=q,b=v;break;
+			case 4:r=t,g=p,b=v;break;
+			case 5:r=v,g=p,b=q;break;
+		}
+		return new ColorRGB(r*255,g*255,b*255);
 	}
 }
