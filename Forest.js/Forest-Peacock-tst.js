@@ -299,3 +299,40 @@ Math.centerVertex2D2=function(v,x,y,i,l){
 	}
 	return [x,y];
 };
+
+class Color{
+	constructor(r,g,b){
+		this.r=r;
+		this.g=g;
+		this.b=b;
+	}
+	get rgb(){
+		return [this.r,this.g,this.b];
+	}
+	set rgb(c){
+		this.r=c[0]|0;
+		this.g=c[1]|0;
+		this.b=c[2]|0;
+	}
+	get hsl(){
+		let r=this.r/255;
+		let g=this.g/255;
+		let b=this.b/255;
+		let max=Math.max(r,g,b),min=Math.min(r,g,b);
+		let h,s,l=(max+min)/2;
+		if(max==min){
+			h=s=0;			
+		}else{
+			let d=max-min;
+			s=l>0.5?d/(2-(max+min)):d/(max+min);
+			
+			switch(max){
+				case r:h=(g-b)/d+(g<b?6:0);	break;
+				case g:h=(b-r)/d+2;			break;
+				case b:h=(r-g)/d+4;			break;
+			}
+			h/=6;
+		}
+		return [h,s,l];
+	}
+}
