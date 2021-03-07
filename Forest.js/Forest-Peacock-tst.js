@@ -302,9 +302,7 @@ Math.centerVertex2D2=function(v,x,y,i,l){
 
 class ColorRGB{
 	constructor(r,g,b){
-		this.r=r;
-		this.g=g;
-		this.b=b;
+		[this.r,this.g,this.b]=[r,g,b];
 	}
 	get rgb(){
 		return [this.r,this.g,this.b];
@@ -331,11 +329,9 @@ class ColorRGB{
 		return new ColorHSL(h,s,l);
 	}
 }
-class ColorHSL(){
+class ColorHSL{
 	constructor(h,s,l){
-		this.h=h;
-		this.s=s;
-		this.l=l;
+		[this.h,this.s,this.l]=[h,s,l];
 	}
 	set hsl(c){
 		[this.h,this.s,this.l]=c;
