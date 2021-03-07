@@ -380,6 +380,9 @@ class ColorHSL{
 		}
 		return new ColorRGB(r*255|0,g*255|0,b*255|0);
 	}
+	toHSV(){
+		return this.toRGB().toHSV();
+	}
 }
 //equivalent to hsb
 class ColorHSV{
@@ -407,5 +410,8 @@ class ColorHSV{
 			case 5:r=v,g=p,b=q;break;
 		}
 		return new ColorRGB(r*255,g*255,b*255);
+	}
+	toHSL(){
+		return this.toRGB().toHSL();
 	}
 }

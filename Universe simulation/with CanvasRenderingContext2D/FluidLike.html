@@ -50,11 +50,12 @@ function setup(){
 		new Force("drag",function(o,r){
 			return o.v.scale(-1.05,o.m);
 		}),
-		new Force("pull",function(o,r){
+		new Force("pullByUser",function(o,r){
 			if(!can.mouseHolding)return new V3();
 			r=can.mouse.sub(o.pos);
-			return r.normalized().scale(100*o.m*(r.length-20)).add(o.v.scale(-5.5,o.m));
-		})
+			return r.normalized().scale(100*(r.length-20)).add(o.v.scale(-5.5,o.m))
+					.add(new V3(0,-g,0));
+		},ForceMode.Accerelation)
 	];
 }
 
