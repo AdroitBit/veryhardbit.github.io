@@ -319,14 +319,14 @@ class ColorRGB{
 	set rgb(c){
 		[this.r,this.g,this.b]=[c[0]|0,c[1]|0,c[2]|0];
 	}
-	toHSL(r,g,b,min,max,h,s,l){
+	toHSL(r,g,b,min,max,h,s,l,d){
 		[r,g,b]=[this.r/255,this.g/255,this.b/255];
 		[min,max]=[Math.min(r,g,b),Math.max(r,g,b)];
 		h,s,l=(max+min)/2;
 		if(max==min){
 			h=s=0;			
 		}else{
-			let d=max-min;
+			d=max-min;
 			s=2*l>1?d/(2-(2*l)):d/(2*l);
 			switch(max){
 				case r:h=(g-b)/d+(g<b?6:0);	break;
@@ -348,13 +348,13 @@ class ColorHSL{
 	get hsl(){
 		return [this.h,this.s,this.l];
 	}
-	toRGB(r,g,b,h,s,l){
-		let [h,s,l]=[this.h,this.s,this.l];
+	toRGB(r,g,b,h,s,l,q,p){
+		[h,s,l]=[this.h,this.s,this.l];
 		if(s==0){
 			r=g=b=l;
 		}else{
-			let q=l<0.5?l*(1+s):l+s-l*s;
-			let p=2*l-q;
+			q=l<0.5?l*(1+s):l+s-l*s;
+			p=2*l-q;
 			[r,g,b]=[
 				hue2rgb(p,q,h+1/3),
 				hue2rgb(p,q,h),
