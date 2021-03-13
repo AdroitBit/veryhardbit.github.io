@@ -615,7 +615,7 @@ class Input{
 					rcodes.push(codes[i].charCodeAt(0));
 				}
 			}
-		}else if(codes instanceof Number&&codes!=Infinity){
+		}else if((codes instanceof Number||(typeof codes=="number"))&&codes!=Infinity){
 			rcodes=[codes];
 		}
 		return rcodes;
