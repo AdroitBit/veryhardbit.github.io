@@ -717,6 +717,13 @@ class V2{
             return acc;
         });
     }
+	neg(){
+		return this.copy().scale(-1);
+	}
+	zero(){
+		this.x=this.y=0;
+		return this;
+	}
     toString(){
         return this.x+","+this.y;
     }
@@ -830,6 +837,10 @@ class V3{
     neg(){
         return this.copy().scale(-1);
     }
+	zero(){
+		this.x=this.y=this.z=0;
+		return this;
+	}
     toString(){
         return this.x+","+this.y+","+this.z;
     }

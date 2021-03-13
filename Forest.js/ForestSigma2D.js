@@ -677,7 +677,10 @@ Input.keysDown=new Set();
 Input.holdedKeysDown=new Set();//it's auto repeat thing like a....aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 Input.keysPressing=new Set();//fire in first pressed until you hold out
 Input.keysUp=new Set();
-
+Input.up=38;
+Input.left=37;
+Input.right=39;
+Input.down=40;
 window.addEventListener("keydown",function(e){
 	let keyCode=e.key;
 	if(e.key.length>1)keyCode=e.keyCode;
