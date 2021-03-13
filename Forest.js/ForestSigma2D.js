@@ -616,7 +616,6 @@ class Input{
 				}
 			}
 		}else if((codes instanceof Number||(typeof codes=="number"))&&codes!=Infinity){
-			console.log("exe");
 			rcodes=[codes];
 		}
 		return rcodes;
