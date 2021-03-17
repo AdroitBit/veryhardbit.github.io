@@ -20,7 +20,7 @@ p{
 	color:white;
 }
 div{
-	
+	display:inline-block;
 	border-radius:30px;
 	padding:10px;
 	transition:0.2s;

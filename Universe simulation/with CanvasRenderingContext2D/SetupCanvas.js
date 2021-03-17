@@ -22,6 +22,7 @@ var factorX=1,factorY=1;
 var factor=1;
 var pause=false;
 var t=0;
+var drshow=2;
 function draw(){
 	can.resize(-1,-1);
 	can.width*=factorX;
@@ -31,7 +32,7 @@ function draw(){
 	ctx.fillRect(-can.width/2,-can.height/2,can.width,can.height);
 	for(let i of o){
 		ctx.openP.fillSty(i.color)
-		.circle(i.pos.x,i.pos.y,i.rshow)
+		.circle(i.pos.x,i.pos.y,i.r+drshow)
 		.pack.offP;
 	}
 	
