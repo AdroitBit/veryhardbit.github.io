@@ -5,63 +5,49 @@
 
 <body>
 	<canvas></canvas>
+	<div style="position:fixed;left:10px;top:10px;background:rgba(255,255,255,0.2);">
+		<p>Amount of particle : </p>
+		<input id="amount" min=50 max=200 type="number" default=100 />
+		<br>
+		<p>gravity : </p>
+		<input id="g" min=0 max=2000 type="range" step="0.01" default=1000 />
+		
+		<p>drag : </p>
+		<input id="drag" min=0 max=2 step=0.01 type="range" default=1.05 />
+	</div>
 	<script>
 var g=1000;
 var l=0.5;
-function setup(){
-	for(let i=0;i<100;++i){
-		co=new PObj(1,2,"#"+round(random()*0xFFFFFF).toString(16));
-		co.r=10;
-		co.rshow=co.r+2;
-		co.pos.x=randomRange(-200,200);
-		co.pos.y=randomRange(-200,200);
-		co.v.x=randomRange(-200,200);
-		co.v.y=randomRange(-200,200);
+var dragVal=1.05;
+function setup(n){
+	if(n<0)n=0;
 
-		co.friction=0.2;
-		co.bounciness=0.9;
-		co.pos.x=0;
-		co.pos.y=randomRange(-200,200);
-		o.push(co);
+	if(o.length<n)
+		for(let i=o.length;i<n;++i){
+			co=new PObj(1,2,"#"+round(random()*0xFFFFFF).toString(16));
+			co.r=10;
+			co.rshow=co.r+2;
+			co.pos.x=randomRange(-200,200);
+			co.pos.y=randomRange(-200,200);
+			co.v.x=randomRange(-200,200);
+			co.v.y=randomRange(-200,200);
+
+			co.friction=0.2;
+			co.bounciness=0.9;
+			co.pos.x=0;
+			co.pos.y=randomRange(-200,200);
+			o.push(co);
+		}
+	else{
+		while(o.length>n){
+			o.splice(floor(randomRange(0,o.length)),1);
+		}
 	}
-	window.Forces=[
-		new Force("gravity",function(o){
-			return new V3(0,o.m*g,0);
-		}),
-		new Force("inFrame",function(o,k,F,r){
-			F=new V3(0,0,0);k=900;
-			if(o.pos.y+o.r>can.height/2)F=F.add(new V3(0,-k*((o.pos.y+o.r)-(can.height/2)),0));
-			if(o.pos.y-o.r<-can.height/2)F=F.add(new V3(0,-k*((o.pos.y-o.r)-(-can.height/2)),0));
-			if(o.pos.x+o.r>can.width/2)F=F.add(new V3(-k*((o.pos.x+o.r)-(can.width/2)),0,0));
-			if(o.pos.x-o.r<-can.width/2)F=F.add(new V3(-k*((o.pos.x-o.r)-(-can.width/2)),0,0));
-			return F;
-		},ForceMode.Accerelation),
-		new Force("pushEachother",function(o1,F,r){
-			F=new V3(0,0,0);
-			o.forEach(function(i){
-				if(o1==i)return false;
-				r=o1.pos.sub(i.pos);
-				if(r.length>o1.r+i.r)return false;
-				F=F.add(r.normalized().scale(-1200*o1.m*i.m*pow(r.length-(o1.r+i.r),1)))
-			});
-			o1.genForce=F;
-			return F;
-		}),
-		new Force("drag",function(o,r){
-			return o.v.scale(-1.05,o.m);
-		}),
-		new Force("pullByUser",function(o,r){
-			if(!can.mouseHolding)return new V3();
-			r=can.mouse.sub(o.pos);
-			return r.normalized().scale(100*(r.length-20)).add(o.v.scale(-5.5,o.m))
-					.add(new V3(0,-g,0));
-		},ForceMode.Accerelation)
-	];
 }
 
 function calculate(vmax){
 	vmax=0;
-	for(dtti=0,dtt=dt/precisionLevel;dtti<dt;dtti+=dtt){
+	for(dtti=0,dtt=dt/precisionLevel;(dt>0&&dtti<dt);dtti+=dtt){
 		for(let i of o){
 			i.a.x=i.a.y=i.a.z=0;
 			for(let i2 of Forces){
@@ -93,7 +79,7 @@ var time0,time1;
 function exe(){
 	time0=time1;
 	time1=new Date().getTime()/1000;
-	dt=time1-time0;
+	dt=(time1-time0);
 	if(!pause){
 		draw();
 		calculate();
@@ -102,8 +88,63 @@ function exe(){
 	requestAnimationFrame(exe);
 }
 window.onload=function(){
-	setup();
+	setup(100);
 	time1=new Date().getTime()/1000;
+	c("input").forEach(function(i){
+		
+		i.default=i.value=i.getAttribute("default")-0;
+		i.on("dblclick",function(e){
+			this.value=this.default;
+			this.oninput();
+		})
+	})
+	
+	window.g_input=c1("#g").on("input",function(){
+		g=this.value;
+	})
+	window.amount_input=c1("#amount").on("input",function(){
+		setup(this.value);
+	})
+	window.drag_input=c1("#drag").on("input",function(){
+		dragVal=this.value;
+	})
+	
+	
+	
+	window.Forces=[
+		new Force("gravity",function(o){
+			return new V3(0,o.m*g,0);
+		}),
+		new Force("inFrame",function(o,k,F,r){
+			F=new V3(0,0,0);k=900;
+			if(o.pos.y+o.r>can.height/2)F=F.add(new V3(0,-k*((o.pos.y+o.r)-(can.height/2)),0));
+			if(o.pos.y-o.r<-can.height/2)F=F.add(new V3(0,-k*((o.pos.y-o.r)-(-can.height/2)),0));
+			if(o.pos.x+o.r>can.width/2)F=F.add(new V3(-k*((o.pos.x+o.r)-(can.width/2)),0,0));
+			if(o.pos.x-o.r<-can.width/2)F=F.add(new V3(-k*((o.pos.x-o.r)-(-can.width/2)),0,0));
+			return F;
+		},ForceMode.Accerelation),
+		new Force("pushEachother",function(o1,F,r){
+			F=new V3(0,0,0);
+			o.forEach(function(i){
+				if(o1==i)return false;
+				r=o1.pos.sub(i.pos);
+				if(r.length>o1.r+i.r)return false;
+				F=F.add(r.normalized().scale(-1200*o1.m*i.m*pow(r.length-(o1.r+i.r),1)))
+			});
+			o1.genForce=F;
+			return F;
+		}),
+		new Force("drag",function(o,r){
+			return o.v.scale(-dragVal,o.m);
+		}),
+		new Force("pullByUser",function(o,r){
+			if(!can.mouseHolding)return new V3();
+			r=can.mouse.sub(o.pos);
+			return r.normalized().scale(100*(r.length-20)).add(o.v.scale(-5.5,o.m))
+					.add(new V3(0,-g,0));
+		},ForceMode.Accerelation)
+	];
+	
 	exe();
 	
 }
