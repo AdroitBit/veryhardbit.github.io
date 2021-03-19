@@ -23,6 +23,7 @@ var factor=1;
 var pause=false;
 var t=0;
 var drshow=2;
+var pullRadius=20
 function draw(){
 	can.resize(-1,-1);
 	can.width*=factorX;
@@ -38,7 +39,7 @@ function draw(){
 	
 	if(can.mouseHolding){
 		ctx.openP.strokSty("white").lineBig(5)
-		.circle(can.mouse.x,can.mouse.y,20)
+		.circle(can.mouse.x,can.mouse.y,pullRadius)
 		.strok.offP;
 	}
 }

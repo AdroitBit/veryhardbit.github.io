@@ -21,6 +21,7 @@ p{
 }
 div{
 	display:inline-block;
+	width:300px;
 	border-radius:30px;
 	padding:10px;
 	transition:0.2s;
@@ -31,6 +32,12 @@ div:hover{
 	padding:15px;
 	margin:0px;
 	opacity:1.0
+}
+
+#panelHider{
+	position:fixed;
+	left:0;
+	top:0;
 }
 
 input[type=range] {

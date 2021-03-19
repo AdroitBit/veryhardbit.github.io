@@ -5,21 +5,29 @@
 
 <body>
 	<canvas></canvas>
+	
+	<input type="checkbox" id="panelHider" checked=true />
 	<div style="position:fixed;left:10px;top:10px;background:rgba(255,255,255,0.2);">
 		<p>Amount of particle : </p>
-		<input id="amount" min=50 max=200 type="number" default=100 /><br>
+		<input id="amount" min=0 max=200 type="number" default=100 /><br>
 		
 		<p>gravity : </p>
 		<input id="g" min=0 max=2000 type="range" step="0.01" default=1000 /><br>
 		
 		<p>drag : </p>
-		<input id="drag" min=0 max=2 step=0.01 type="range" default=1.05 /><br>
+		<input id="drag" min=0 max=10 step=0.01 type="range" default=1.05 /><br>
 		
 		<p>radius : </p>
 		<input id="radius" min=2 max=20 step=0.01 type="range" default=10 /><br>
 		
 		<p>additional shown radius: </p>
-		<input id="radius_plus" min=-20 max=20 step=0.01 type="range" default=2 />
+		<input id="radius_plus" min=-20 max=20 step=0.01 type="range" default=2 /><br>
+		
+		<p>pulling radius: </p>
+		<input id="pull_radius" min=20 max=250 step=0.01 type="range" default=20 /><br>
+		
+		<p>charge: </p>
+		<input id="charge" min=0 max=2 step=0.01 type="range" default=0 />
 	</div>
 	<script>
 var g=1000;
@@ -36,6 +44,7 @@ function setup(n){
 			co.pos.y=randomRange(-200,200);
 			co.v.x=randomRange(-200,200);
 			co.v.y=randomRange(-200,200);
+			co.q=1;
 
 			co.friction=0.2;
 			co.bounciness=0.9;
@@ -121,6 +130,19 @@ window.onload=function(){
 	window.radius_plus_input=c1("#radius_plus").on("input",function(rad){
 		drshow=this.value-0;
 	})
+	window.pullRadius_input=c1("#pull_radius").on("input",function(rad){
+		pullRadius=this.value-0;
+	})
+	window.charge_input=c1("#charge").on("input",function(q){
+		q=this.value-0;
+		o.forEach(function(i){
+			i.q=q;
+		})
+	})
+	
+	window.panelHider=c1("#panelHider").on("input",function(e){
+		c1("div").style.visibility=["hidden","visible"][this.checked-0];
+	})
 	
 	
 	setup(100);
@@ -156,9 +178,19 @@ window.onload=function(){
 		new Force("pullByUser",function(o,r){
 			if(!can.mouseHolding)return new V3();
 			r=can.mouse.sub(o.pos);
-			return r.normalized().scale(100*(r.length-20)).add(o.v.scale(-5.5,o.m))
-					.add(new V3(0,-g,0));
-		},ForceMode.Accerelation)
+			return r.normalized().scale(100*(r.length-pullRadius)).add(o.v.scale(-5.5,o.m))
+					//.add(new V3(0,-g,0));
+		},ForceMode.Accerelation),
+		new Force("Static",function(o1,r){
+			F=new V3(0,0,0);
+			o.forEach(function(i){
+				if(o1==i)return false;
+				r=o1.pos.sub(i.pos);
+				F=F.add(r.normalized().scale(1200000*o1.q*i.q/pow(r.length,2)))
+			});
+			o1.genForce=o1.genForce.add(F);
+			return F;
+		},ForceMode.Force)
 	];
 	
 	exe();
