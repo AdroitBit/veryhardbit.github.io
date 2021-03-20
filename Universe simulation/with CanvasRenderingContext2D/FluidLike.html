@@ -26,6 +26,9 @@
 		<p>pulling radius: </p>
 		<input id="pull_radius" min=20 max=250 step=0.01 type="range" default=20 /><br>
 		
+		<p>pulling strength: </p>
+		<input id="pull_strength" min=100 max=200 step=0.01 type="range" default=100 /><br>
+		
 		<p>charge: </p>
 		<input id="charge" min=0 max=2 step=0.01 type="range" default=0 />
 	</div>
@@ -33,6 +36,7 @@
 var g=1000;
 var l=0.5;
 var dragVal=1.05;
+var pullStrength=100;
 function setup(n){
 	if(n<0)n=0;
 
@@ -40,16 +44,14 @@ function setup(n){
 		for(let i=o.length;i<n;++i){
 			co=new PObj(1,2,"#"+round(random()*0xFFFFFF).toString(16));
 			co.r=radius_input.value-0;
-			co.pos.x=randomRange(-200,200);
+			co.pos.x=0;
 			co.pos.y=randomRange(-200,200);
 			co.v.x=randomRange(-200,200);
 			co.v.y=randomRange(-200,200);
-			co.q=0;
+			co.q=charge_input.value-0;
 
 			co.friction=0.2;
 			co.bounciness=0.9;
-			co.pos.x=0;
-			co.pos.y=randomRange(-200,200);
 			o.push(co);
 		}
 	else{
@@ -133,6 +135,9 @@ window.onload=function(){
 	window.pullRadius_input=c1("#pull_radius").on("input",function(rad){
 		pullRadius=this.value-0;
 	})
+	window.pullStrength_input=c1("#pull_strength").on("input",function(){
+		pullStrength=this.value-0;
+	})
 	window.charge_input=c1("#charge").on("input",function(q){
 		q=this.value-0;
 		o.forEach(function(i){
@@ -178,7 +183,8 @@ window.onload=function(){
 		new Force("pullByUser",function(o,r){
 			if(!can.mouseHolding)return new V3();
 			r=can.mouse.sub(o.pos);
-			return r.normalized().scale(100*(r.length-pullRadius)).add(o.v.scale(-5.5,o.m))
+			return r.normalized().scale(pullStrength*(r.length-pullRadius))
+					.add(o.v.scale(-5.5,o.m))
 					//.add(new V3(0,-g,0));
 		},ForceMode.Accerelation),
 		new Force("Static",function(o1,r){
