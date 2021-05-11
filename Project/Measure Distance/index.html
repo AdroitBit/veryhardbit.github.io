@@ -1,16 +1,180 @@
-<body>
-	<script src="veryhardbit.github.io/Forest.js/Forest-tst.js"></script>
-	<script src="veryhardbit.github.io/Forest.js/Forest-Peacock-tst.js"></script>
-	<script src="veryhardbit.github.io/Forest.js/Forest-Spider-tst.js"></script>
-	<script src="veryhardbit.github.io/Forest.js/Forest-Monkey-tst.js"></script>
-	<input/>
-	<script>
-var inp=c1("input")
-function exe(){
-	inp.value=geolocationCoordinatesInstance.speed;
-	requestAnimationFrame(exe)
-}
-exe()
+<html><head>
+	<style>
+	    a{
+	        underline:none;
+	        text-decoration:none;
+	    }
+		*{
+			font-size:20px;
+			font-family:Helvetica, Arial, sans-serif;
+			color:white;
+			transition:0.1s;
+			user-select:none;
+		}
+		body{
+			background-color:#222;
+		}
+		#end{
+			display:inline-block;
+			position:fixed;
+			left:0;bottom:0;
+			font-size:10px;
+			width:100%;
+			height:200px;
+			background-color:#414952;
+		}
+		#workList{
+			display:inline-block;
+			position:fixed;
+			left:50%;top:20%;
+			transform:translate(-50%,-50%);
+			overflow:scroll;
+			width:90%;
+			height:50%;
+			max-width:800px;
+			max-height:200px;
+			background-color:#de0000;
+			/*border:15px solid white;*/
+			border-radius:10px;
+			box-shadow:0 0 20px 0px rgba(255,255,255,0.5);
+			list-style-type:none;
+		}
+		#workList li{
+			display:block;
+			box-shadow: 0 10px rgba(0,0,0,0.5);
+			margin-bottom:25px;
+		}
+		.wip{
+			color:#bbb;
+		}
+		.ready{
+			color:white;
+		}
+		.ready:active{
+			margin-left:20px;
+			background-color:rgba(0,0,0,0.1);
+			width:200px;
+		}
+		.ready:hover{
+			font-size:30px;
+		}
+		#workList{
+			overflow-y: scroll;
+		}
+		#workList::-webkit-scrollbar-track{
+			-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+			border-radius: 10px;
+			background-color: white;
+			/*background-color:transparent;*/
+		}
 
-	</script>
-</body>
+		#workList::-webkit-scrollbar{
+			width: 12px;
+			/*background-color: #F5F5F5;*/
+			background-color:transparent;
+		}
+
+		#workList::-webkit-scrollbar-thumb{
+			border-radius: 10px;
+			-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+			background-color: tomato;
+		}
+	</style>
+</head>
+<body>
+	<canvas style="position:fixed;left:0;top:0;" width="807" height="690"></canvas>
+	<ul id="workList">
+		<li class="wip">Animation</li>
+		<li class="wip">Online Controller</li>
+		<li class="ready"><a href="Work/Spread/Spread.html">Spread</a></li>
+		<li class="ready"><a href="Work/Universe2D/Universe2D.html">Universe2D simulation</a></li>
+	</ul>
+	<ul id="meaning" style="list-style-type:square">
+		<li id="wip" style="color:#bbb;">Work in Progress</li>
+		<li id="ready" style="color:white">Ready</li>
+	</ul>
+	<div id="end" style="opacity:0.7">
+		<div id="des" style="margin:10px">This website is for the purpose of my current project,drop the link of my own work etc.,</div>
+		<div id="contact" style="margin:10px">
+			<a href="https://www.facebook.com/profile.php?id=100010191970459" target="_blank">
+			<img src="imgs/facebook_logo.png" width="40" height="40" style="background-color:white;border-radius:50%;border:2px solid white">
+			</a>
+		</div>
+	</div>
+	<script src="https://dl.dropboxusercontent.com/s/su6y0hfo1p0yojp/Forest-tst.js?dl=0"></script>
+	<script src="https://dl.dropboxusercontent.com/s/945diqbm1rqdu1a/Forest-Peacock-tst.js?dl=0"></script>
+	<script src="https://dl.dropboxusercontent.com/s/b0nj6duambi5t30/Forest-Spider-tst.js?dl=0"></script>
+	<script src="https://dl.dropboxusercontent.com/s/wtz903pkh4d2st1/Forest-Monkey.js?dl=0"></script>
+	<script>
+var can=c1("canvas"),ctx=can.d2;
+var o=[];
+var dt=1/60;
+function randomRange(a,b){
+	return random()*(b-a)+a;
+}
+function create(r){
+	r=randomRange(10,15);
+	vx=randomRange(-200,200);
+	vy=randomRange(-200,200);
+	v=hypot(vx,vy);
+	if(hypot(vx,vy)<100)
+	{
+		vx=vx/v*100;
+		vy=vy/v*100;
+	}
+	return {
+		r:r,
+		color:"#"+floor(random()*0xFFFFFF).toString(16),
+		pos:{
+			x:randomRange(-can.width/2+r,can.width/2-r),
+			y:randomRange(-can.height/2+r,can.height-r)
+		},
+		v:{
+			x:randomRange(-100,100),
+			y:randomRange(-100,100)
+		},
+		g:{
+			x:randomRange(-100,100),
+			y:randomRange(-100,100)
+		}
+	}
+}
+function draw(){
+	can.resize(-1,-1);
+	ctx.setTransform(1,0,0,1,can.width/2,can.height/2);
+	if(o.length<150){
+		o.push(create());
+	}
+	o.forEach(function(i,i2){
+		ctx.openP.fillSty(i.color)
+		.circle(i.pos.x,i.pos.y,i.r)
+		.pack.offP;
+	});
+}
+function movement(){
+	o.forEach(function(i,i2){
+		i.pos.x+=i.v.x*dt;
+		i.pos.y+=i.v.y*dt;
+
+		if(i.pos.x-i.r<-can.width/2&&i.v.x<0){
+			i.v.x=abs(i.v.x);
+		}else if(i.pos.x+i.r>can.width/2&&i.v.x>0){
+			i.v.x=-abs(i.v.x);
+		}
+		if(i.pos.y-i.r<-can.height/2&&i.v.y<0){
+			i.v.y=abs(i.v.y);
+		}else if(i.pos.y+i.r>can.height/2&&i.v.y>0){
+			i.v.y=-abs(i.v.y);
+		}
+
+		i.v.x+=i.g.x*dt;
+		i.v.y+=i.g.y*dt;
+	})
+}
+function exe(){
+	draw();
+	movement();
+	requestAnimationFrame(exe);
+}
+exe();
+	</script></body></html>
