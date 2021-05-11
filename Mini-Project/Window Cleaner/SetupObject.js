@@ -1,1 +1,0 @@
-var can=c1("canvas"),ctx=can.d2;
