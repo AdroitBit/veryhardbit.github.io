@@ -12,27 +12,16 @@ function exe(){
 	requestAnimationFrame(exe)
 }
 exe()*/
-
-var options = {
-  enableHighAccuracy: true,
-  timeout: 5000,
-  maximumAge: 0
-};
-
-function success(pos) {
-  var crd = pos.coords;
-
-  console.log('Your current position is:');
-  console.log(`Latitude : ${crd.latitude}`);
-  console.log(`Longitude: ${crd.longitude}`);
-  console.log(`More or less ${crd.accuracy} meters.`);
-}
-
-function error(err) {
-  console.warn(`ERROR(${err.code}): ${err.message}`);
-}
-
-navigator.geolocation.getCurrentPosition(success, error, options);
+v=new V3();
+t0=t1=new Date().getTime();
+window.addEventListener("devicemotion",function(e){
+	t0=t1;
+	t1=new Date().getTime();
+	dt=(t1-t0)/1000;
+	ag=e.accelerationIncludingGravity;
+	v=v.add(new V3(ag.x,ag.y,ag.z).scale(dt));
+	console.log(v);
+},true)
 
 	</script>
 </body>
