@@ -29,8 +29,9 @@ window.addEventListener("devicemotion",function(e){
 	t0=t1;
 	t1=new Date().getTime();
 	dt=(t1-t0)/1000;
-	ag=e.accelerationIncludingGravity;
-	v=v.add(new V3(ag.x,ag.y,ag.z).scale(dt));
+	//a=e.accelerationIncludingGravity;
+	a=e.acceleration;
+	v=v.add(new V3(a.x,a.y,a.z).scale(dt));
 	t.value=toStr(v);
 },true)
 
