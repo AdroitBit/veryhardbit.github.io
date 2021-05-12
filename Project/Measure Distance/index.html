@@ -4,7 +4,7 @@
 	<script src="https://veryhardbit.github.io/Forest.js/Forest-Peacock-tst.js"></script>
 	<script src="https://veryhardbit.github.io/Forest.js/Forest-Spider-tst.js"></script>
 	<script src="https://veryhardbit.github.io/Forest.js/Forest-Monkey-tst.js"></script>
-	<input/>
+	<texarea></textarea>
 	<script>
 /*var inp=c1("input")
 function exe(){
@@ -12,6 +12,7 @@ function exe(){
 	requestAnimationFrame(exe)
 }
 exe()*/
+t=c1("textarea")
 v=new V3();
 t0=t1=new Date().getTime();
 window.addEventListener("devicemotion",function(e){
@@ -20,7 +21,7 @@ window.addEventListener("devicemotion",function(e){
 	dt=(t1-t0)/1000;
 	ag=e.accelerationIncludingGravity;
 	v=v.add(new V3(ag.x,ag.y,ag.z).scale(dt));
-	console.log(v);
+	t.value=v.x+"\n"+v.y+"\n"+v.z;
 },true)
 
 	</script>
