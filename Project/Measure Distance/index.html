@@ -2,7 +2,9 @@
 <head>
 	<style>
 textarea{
-	height:300px;
+	height:200px;
+	width:100px;
+	position:fixed;
 }
 	</style>
 </head>
@@ -11,7 +13,8 @@ textarea{
 	<script src="https://veryhardbit.github.io/Forest.js/Forest-Peacock-tst.js"></script>
 	<script src="https://veryhardbit.github.io/Forest.js/Forest-Spider-tst.js"></script>
 	<script src="https://veryhardbit.github.io/Forest.js/Forest-Monkey-tst.js"></script>
-	<textarea></textarea>
+	<textarea id="tv" style="left:10px;"></textarea>
+	<textarea id="ta" style="left:210px;"></textarea>
 	<script>
 /*var inp=c1("input")
 function exe(){
@@ -22,7 +25,8 @@ exe()*/
 function toStr(v){
 	return v.x.toFixed(2)+"\n"+v.y.toFixed(2)+"\n"+v.z.toFixed(2)
 }
-t=c1("textarea")
+tv=c1("#tv")
+ta=c1("#ta")
 v=new V3();
 t0=t1=new Date().getTime();
 window.addEventListener("devicemotion",function(e){
@@ -32,7 +36,8 @@ window.addEventListener("devicemotion",function(e){
 	//a=e.accelerationIncludingGravity;
 	a=e.acceleration;
 	v=v.add(new V3(a.x,a.y,a.z).scale(dt));
-	t.value=toStr(v);
+	tv.value=toStr(v);
+	ta.value=toStr(a);
 },true)
 
 	</script>
